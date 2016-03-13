@@ -126,7 +126,7 @@
       },
       "_selectable": true
     },
-    "501c3number": {
+    "num501c3": {
       "type": "String",
       "required": false,
       "length": 10,
