@@ -12,8 +12,8 @@
   "properties": {
     "intakehealthrecordid": {
       "type": "Number",
-      "generated":true,
       "id": true,
+      "generated": true,
       "required": true,
       "length": null,
       "precision": 10,
@@ -220,6 +220,70 @@
         "nullable": "YES"
       },
       "_selectable": true
+    },
+    "other1Description": {
+      "type": "String",
+      "required": false,
+      "length": 50,
+      "precision": null,
+      "scale": null,
+      "mssql": {
+        "columnName": "Other1Description",
+        "dataType": "varchar",
+        "dataLength": 1000,
+        "dataPrecision": null,
+        "dataScale": null,
+        "nullable": "YES"
+      },
+      "_selectable": false
+    },
+    "other2Description": {
+      "type": "String",
+      "required": false,
+      "length": 50,
+      "precision": null,
+      "scale": null,
+      "mssql": {
+        "columnName": "Other2Description",
+        "dataType": "varchar",
+        "dataLength": 1000,
+        "dataPrecision": null,
+        "dataScale": null,
+        "nullable": "YES"
+      },
+      "_selectable": false
+    },
+    "other3Description": {
+      "type": "String",
+      "required": false,
+      "length": 50,
+      "precision": null,
+      "scale": null,
+      "mssql": {
+        "columnName": "Other3Description",
+        "dataType": "varchar",
+        "dataLength": 1000,
+        "dataPrecision": null,
+        "dataScale": null,
+        "nullable": "YES"
+      },
+      "_selectable": false
+    },
+    "other4Description": {
+      "type": "String",
+      "required": false,
+      "length": 50,
+      "precision": null,
+      "scale": null,
+      "mssql": {
+        "columnName": "Other4Description",
+        "dataType": "varchar",
+        "dataLength": 1000,
+        "dataPrecision": null,
+        "dataScale": null,
+        "nullable": "YES"
+      },
+      "_selectable": false
     }
   },
   "validations": [],

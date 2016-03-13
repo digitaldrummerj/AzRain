@@ -44,8 +44,8 @@
     },
     "groupemergencynumbersid": {
       "type": "Number",
-      "generated":true,
       "id": true,
+      "generated": true,
       "required": true,
       "length": null,
       "precision": 10,
