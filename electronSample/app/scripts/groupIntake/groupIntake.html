@@ -2,6 +2,8 @@
     <md-toolbar layout="column">
         <section layout="row" layout-sm="column" layout-align="left left" layout-wrap>
             <md-button class="md-raised md-info" ng-href="#/groupintake">Group Intake</md-button>
+            <md-button class="md-raised md-info" ng-href="#/groupintake">Animal Intake</md-button>
+            <md-button class="md-raised md-info" ng-href="#/groupintake">Daily Log</md-button>
             <!--<md-button class="md-raised md-primary" ng-click="_ctrl.saveCustomer()">Save</md-button>
                 <md-button class="md-raised md-danger" ng-click="_ctrl.cancelEdit()">Cancel</md-button>
                 <md-button class="md-raised md-warn" ng-click="_ctrl.deleteCustomer()">Delete</md-button>
@@ -10,121 +12,155 @@
     </md-toolbar>
 </div>
 <form name="testForm">
-<div flex="100" layout="row">
-    
+    <div flex="100" layout="row">
+        <md-toolbar>
+            <h2>Group Intake</h2>
+        </md-toolbar>
+    </div>
+    <div flex="100" layout="row">
+
         <div flex="25" layout="column">
-            <md-toolbar>
-                <h2>Group Intake</h2>
-            </md-toolbar>
-            <md-input-container>
-                <label>Groups</label>
-                <input required name="groupName" ng-model="_ctrl.filterText" ng-change="_ctrl.filtergroup()">
-            </md-input-container>
-            <md-list>
-                <md-list-item ng-repeat="it in _ctrl.groups">
-                    <md-button ng-click="_ctrl.selectGroup(it, $index, testForm, $event)" ng-class="{'selected' : it === _ctrl.selected }">
-                        {{it.groupname}}
-                    </md-button>
-                </md-list-item>
-            </md-list>
+            <div layout="row">
+                <md-input-container>
+                    <label>Groups</label>
+                    <input required name="groupName" ng-model="_ctrl.filterText" ng-change="_ctrl.filtergroup()">
+                </md-input-container>
+            </div>
+            <div layout="row">
+                <md-list>
+                    <md-list-item ng-repeat="it in _ctrl.groups">
+                        <md-button ng-click="_ctrl.selectGroup(it, $index, testForm, $event)" ng-class="{'selected' : it === _ctrl.selected }">
+                            {{it.groupname}}
+                        </md-button>
+                    </md-list-item>
+                </md-list>
+            </div>
         </div>
 
         <div flex="75" layout="column" role="main">
 
             <md-content id="content">
-                <div layout="column">
+                <div layout="row">
+                    <div layout="column">
 
-                    <md-content layout="column" layout-padding class="autoScroll">
-                        <div layout="row">
-                            <div layout="column">
-                                <md-input-container>
-                                    <label>Name</label>
-                                    <input ng-model="_ctrl.selected.groupname" type="text">
-                                </md-input-container>
+                        <md-content layout="column" layout-padding class="autoScroll">
+                            <md-toolbar class="md-theme-light">
+                                <h3 class="md-toolbar-tools">
+                                      <span>Personal Information</span>
+                                </h3>
+                            </md-toolbar>
+                            <div layout="row">
+                                <div layout="column">
+                                    <md-input-container>
+                                        <label>Name</label>
+                                        <input ng-model="_ctrl.selected.groupname" type="text">
+                                    </md-input-container>
+                                </div>
+                                <div layout="column">
+                                    <md-input-container>
+                                        <label>Address</label>
+                                        <input ng-model="_ctrl.selected.address" ng-required="true">
+                                    </md-input-container>
+                                </div>
                             </div>
-                            <div layout="column">
-                                <md-input-container>
-                                    <label>Address</label>
-                                    <input ng-model="_ctrl.selected.address" ng-required="true">
-                                </md-input-container>
-                            </div>
-                        </div>
-                        <div layout="row">
-                            <div layout="column">
+                            <div layout="row">
+                                <div layout="column">
 
-                                <md-input-container md-no-float>
-                                    <label>City</label>
-                                    <input ng-model="_ctrl.selected.city" type="text">
-                                </md-input-container>
+                                    <md-input-container md-no-float>
+                                        <label>City, State</label>
+                                        <input disabled ng-model="_ctrl.selected.statecityzip.locationtext" type="text">
+                                    </md-input-container>
+                                </div>
+                                <div layout="column">
+                                    <md-input-container md-no-float>
+                                        <label>Zip</label>
+                                        <md-autocomplete md-no-cache="true" md-disabled="false" md-selected-item="_ctrl.selectedZipcode" md-search-text-change="_ctrl.zipcodeSearchTextChange(_ctrl.searchText)"
+                                        md-search-text="_ctrl.zipcodeSearchText" md-selected-item-change="_ctrl.zipcodeSelectedItemChange(item)"
+                                        md-items="item in _ctrl.zipcodeQuerySearch(_ctrl.zipcodeSearchText)" md-item-text="item.zipcode"
+                                        md-min-length="2" placeholder="Zipcode">
+                                            <md-item-template>
+                                                <span md-highlight-text="_ctrl.zipcodeSearchText" md-highlight-flags="^i">{{item.zipcode}} ({{item.locationtext}})</span>
+                                            </md-item-template>
+                                            <md-not-found>
+                                                No zipcodes matching "{{_ctrl.zipcodeSearchText}}" were found.
+                                            </md-not-found>
+                                        </md-autocomplete>
+                                    </md-input-container>
+                                </div>
                             </div>
-                            <div layout="column">
-                                <md-input-container md-no-float>
-                                    <label>Zip</label>
-                                    <input ng-model="_ctrl.selected.statecityzipid" type="text">
-                                </md-input-container>
-                            </div>
-                        </div>
-                        <div layout="row">
+                            <div layout="row">
 
-                            <div layout="column">
-                                <md-input-container md-no-float>
-                                    <label>Phone</label>
-                                    <input ng-model="_ctrl.selected.phonenumber" type="text">
-                                </md-input-container>
-                                <md-input-container md-no-float>
-                                    <label>501c3 Number</label>
-                                    <input ng-model="_ctrl.selected.num501c3" type="text">
-                                </md-input-container>
+                                <div layout="column">
+                                    <md-input-container md-no-float>
+                                        <label>Phone</label>
+                                        <input ng-model="_ctrl.selected.phonenumber" type="text">
+                                    </md-input-container>
+                                </div>
+                                <div layout="column">
+                                    <md-input-container md-no-float>
+                                        <label>501c3 Number</label>
+                                        <input ng-model="_ctrl.selected.num501c3" type="text">
+                                    </md-input-container>
+                                </div>
                             </div>
-                        </div>
-                        <div layout="row">
+                            <md-toolbar class="md-theme-light">
+                                <h3 class="md-toolbar-tools">
+                                      <span>Director Information</span>
+                                </h3>
+                            </md-toolbar>
+                            <div layout="row">
 
-                            <div layout="column">
-                                <md-input-container md-no-float>
-                                    <label>Directors Name</label>
-                                    <input ng-model="_ctrl.selected.directorname" type="text">
-                                </md-input-container>
-                            </div>
-                            <div layout="column">
+                                <div layout="column">
+                                    <md-input-container md-no-float>
+                                        <label>Directors Name</label>
+                                        <input ng-model="_ctrl.selected.directorname" type="text">
+                                    </md-input-container>
+                                </div>
+                                <div layout="column">
 
-                                <md-input-container md-no-float>
-                                    <label>Director Phone</label>
-                                    <input ng-model="_ctrl.selected.directorphonnumber" type="text">
-                                </md-input-container>
+                                    <md-input-container md-no-float>
+                                        <label>Director Phone</label>
+                                        <input ng-model="_ctrl.selected.directorphonnumber" type="text">
+                                    </md-input-container>
+                                </div>
                             </div>
-                        </div>
-                        <div layout="row">
+                            <div layout="row">
 
-                            <div layout="column">
-                                <md-input-container md-no-float>
-                                    <label>Directory Fax</label>
-                                    <input ng-model="_ctrl.selected.directorfaxnumber" type="text">
-                                </md-input-container>
+                                <div layout="column">
+                                    <md-input-container md-no-float>
+                                        <label>Directory Fax</label>
+                                        <input ng-model="_ctrl.selected.directorfaxnumber" type="text">
+                                    </md-input-container>
+                                </div>
+                                <div class="column">
+                                    <md-input-container md-no-float>
+                                        <label>Directory Email</label>
+                                        <input ng-model="_ctrl.selected.directoremail" type="text">
+                                    </md-input-container>
+                                </div>
                             </div>
-                            <div class="column">
-                                <md-input-container md-no-float>
-                                    <label>Directory Email</label>
-                                    <input ng-model="_ctrl.selected.directoremail" type="text">
-                                </md-input-container>
-                            </div>
-                        </div>
-                    </md-content>
-                    <section layout="row" layout-sm="column" layout-align="left" layout-wrap>
-                        <md-button class="md-raised md-info" ng-click="_ctrl.newGroup(testForm, $event)">New</md-button>
-                        <md-button class="md-raised md-primary" ng-click="_ctrl.saveGroup()">Save</md-button>
-                        <md-button class="md-raised md-danger" ng-click="_ctrl.cancelEdit($event, testForm)">Cancel</md-button>
-                        <md-button class="md-raised md-warn" ng-click="_ctrl.deleteGroup($event)">Delete</md-button>
-                    </section>
+                        </md-content>
+                    </div>
+                    <div layout="column">
+                        <section layout="column" layout-sm="column" layout-align="left" layout-wrap>
+                            <md-button class="md-raised md-info" ng-click="_ctrl.newGroup(testForm, $event)">New</md-button>
+                            <md-button class="md-raised md-primary" ng-click="_ctrl.saveGroup()">Save</md-button>
+                            <md-button class="md-raised md-danger" ng-click="_ctrl.cancelEdit($event, testForm)">Cancel</md-button>
+                            <md-button class="md-raised md-warn" ng-click="_ctrl.deleteGroup($event)">Delete</md-button>
+                        </section>
 
+
+                    </div>
                 </div>
-                Master:
+                <!--  Master:
                 <pre>{{_ctrl.master | json }}</pre> Selected:
                 <pre>{{_ctrl.selected | json }}</pre> Groups:
                 <pre>{{_ctrl.groups | json }}</pre>
+                -->
                 <!--<pre>{{_ctrl.stateCityZip | json }}</pre> -->
 
             </md-content>
-    
+
+        </div>
     </div>
-</div>
 </form>

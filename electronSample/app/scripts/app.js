@@ -7,7 +7,9 @@
     angular.module('app', [
         'ngRoute',
         'ngMaterial',
-        'ngAnimate'
+        'ngAnimate',
+        'ngMessages' 
+        
     ])
     .config(['$routeProvider', function ($routeProvider) {
             $routeProvider.when('/', {
@@ -20,6 +22,8 @@
                 controller: 'groupIntakeController',
                 controllerAs: '_ctrl'
             });
+                        
+
             $routeProvider.otherwise({ redirectTo: '/' });
         }
     ])

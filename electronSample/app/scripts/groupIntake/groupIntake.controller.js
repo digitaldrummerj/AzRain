@@ -3,8 +3,8 @@
     angular.module('app')
         .controller('groupIntakeController', groupIntakeController);
 
-    groupIntakeController.$inject = ['groupIntakeService', '$mdDialog', 'statecityzipService']
-    function groupIntakeController(groupIntakeService, $mdDialog, statecityzipService) {
+    groupIntakeController.$inject = ['groupIntakeService', '$mdDialog', 'statecityzipService', '$log']
+    function groupIntakeController(groupIntakeService, $mdDialog, statecityzipService, $log) {
         var self = this;
         self.selectGroup = selectgroup;
         self.deleteGroup = deletegroup;
@@ -12,6 +12,9 @@
         self.cancelEdit = cancelEdit;
         self.filtergroup = filtergroup;
         self.newGroup = newGroup;
+        self.zipcodeQuerySearch = zipcodeQuerySearch;
+        self.zipcodeSearchTextChange = zipcodeSearchTextChange;
+        self.zipcodeSelectedItemChange = zipcodeSelectedItemChange;
 
         self.init = false;
         if (self.init === false) {
@@ -48,7 +51,7 @@
                 $mdDialog.show(confirm).then(function() {
                     var original = angular.copy(self.master);
                     self.groups[self.selectedIndex] = original;
-                      
+
                     self.selected = {};
                     self.selectedIndex = null;
                     self.master = {};
@@ -58,7 +61,8 @@
                 self.selected = {};
                 self.selectedIndex = null;
                 self.master = {};
-                
+                form.$setPristine();
+
             }
         }
 
@@ -80,12 +84,19 @@
                     self.master = angular.copy(group);
                     self.selected = group;
                     self.selectedIndex = index;
+                    self.zipcodeSearchText = self.selected.statecityzip.zipcode;
+                    self.selectedZipcode = self.selected.statecityzip;
+
                     form.$setPristine();
                 });
             } else {
                 self.master = angular.copy(group);
                 self.selected = group;
                 self.selectedIndex = index;
+                self.zipcodeSearchText = self.selected.statecityzip.zipcode;
+                self.selectedZipcode = self.selected.statecityzip;
+                form.$setPristine();
+
             }
         }
 
@@ -130,6 +141,7 @@
             console.log('saveGroup', self.selected);
             if (self.selected != null && self.selected.groupid != null) {
                 console.log('saveGroup Updatings');
+                
                 groupIntakeService.updateGroup(self.selected).then(function(affectedRows) {
                     $mdDialog.show(
                         $mdDialog
@@ -167,8 +179,10 @@
             groupIntakeService.getGroups().then(function(groups) {
                 console.log('groups', groups);
                 self.groups = [].concat(groups);
-                self.selected = groups[0];
-                self.master = angular.copy(self.selected);
+                // self.selected = groups[0];
+                // self.zipcodeSearchText = groups[0].statecityzip.zipcode;
+                // self.selectedZipcode = groups[0].statecityzip;
+                // self.master = angular.copy(self.selected);
             });
         }
 
@@ -184,11 +198,39 @@
                 getAllgroups();
             }
             else {
+
                 groupIntakeService.getGroupByName(self.filterText).then(function(groups) {
                     self.groups = [].concat(groups);
-                    self.selected = groups[0];
-                    self.master = angular.copy(self.selected);
+                    // self.selected = groups[0];
+                    // self.zipcodeSearchText = groups[0].statecityzip.zipcode;
+                    // self.selectedZipcode = groups[0].statecityzip;
+
+                    // self.master = angular.copy(self.selected);
                 });
+            }
+        }
+
+
+        function zipcodeQuerySearch(query) {
+            console.log('querySearch');
+            //var results = query ? self.zipcodes.filter(createFilterFor(query)) : self.zipcodes,
+            if (!query) {
+                return statecityzipService.getStateCityZip();
+            } else {
+
+                return statecityzipService.filterByZip(query);
+            }
+        }
+
+        function zipcodeSearchTextChange(text) {
+            $log.info('Text changed to ' + text);
+        }
+
+        function zipcodeSelectedItemChange(item) {
+            if (item) {
+                $log.info('Item changed to ' + JSON.stringify(item));
+                self.selected.statecityzip = item;
+                self.selected.statecityzipid = item.statecityzipid;
             }
         }
     }

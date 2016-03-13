@@ -21,8 +21,9 @@
             return 'http://' + serverinfo.server + ':' + serverinfo.port + '/api/' + object;
         }
 
-        function getGroups() {            
-            return $http.get(getApiUrl()).then(function(result){
+        function getGroups() {     
+            var filter = {"include": "statecityzip"};       
+            return $http.get(getApiUrl() + "?filter=" +  encodeURI(JSON.stringify(filter))).then(function(result){
                 return result.data;
             });
         }
@@ -34,11 +35,17 @@
         }
         
         function getGroupByName(filterText) {
-            console.log('filter group', JSON.stringify(filterText));
-            var filter = 
-            {"filter": {"where": {"groupname": {"like": "%"+ filterText +"%"}}}}
-            http://localhost:3000/api/Groupsetups?filter=[object%20Object]
-            return $http.get(getApiUrl(), filter).then(function(result){
+            // Filter EX: {"limit":20, "where":{"groupname": {"like": "%CAT%"}}}
+                var filterText = "%" + filterText + "%";
+            
+    //         var uri = JSON.stringify({"limit":20, "where":{"groupname": {"like": "%CAT%"}}});
+    // var res = encodeURI(uri);
+            
+            var filter = {"include": "statecityzip", "where":{"groupname": {like: filterText}}};
+            console.log('filter group', filter, encodeURI(JSON.stringify(filter)));
+            
+            //http://localhost:3000/api/Groupsetups?filter=[object%20Object]
+            return $http.get(getApiUrl() + "?filter=" + encodeURI(JSON.stringify(filter))).then(function(result){
                 console.log('filter response', result);
                 return result.data;
             });
