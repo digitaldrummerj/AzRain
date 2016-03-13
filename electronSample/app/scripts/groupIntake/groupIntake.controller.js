@@ -1,4 +1,4 @@
-(function () {
+(function() {
     'use strict';
     angular.module('app')
         .controller('groupIntakeController', groupIntakeController);
@@ -6,65 +6,131 @@
     groupIntakeController.$inject = ['groupIntakeService', '$mdDialog', 'statecityzipService']
     function groupIntakeController(groupIntakeService, $mdDialog, statecityzipService) {
         var self = this;
-
-        self.selected = null;
-        self.groups = [];
-        self.selectedIndex = 0;
-        self.filterText = null;
         self.selectGroup = selectgroup;
         self.deleteGroup = deletegroup;
         self.saveGroup = savegroup;
         self.cancelEdit = cancelEdit;
         self.filtergroup = filtergroup;
         self.newGroup = newGroup;
-        self.stateCityZip = [];
-        // Load initial data
-        getAllgroups();
-        //getCityStateZipCodes();
-        self.master = {};
+
+        self.init = false;
+        if (self.init === false) {
+            activate();
+        }
+
+        function activate() {
+            self.selected = null;
+            self.groups = [];
+            self.selectedIndex = 0;
+            self.filterText = null;
+            self.stateCityZip = [];
+            self.master = {};
+            // Load initial data
+            getAllgroups();
+            //getCityStateZipCodes();
+            self.init = true;
+        }
+
         //----------------------
         // Internal functions 
         //----------------------
 
-        function newGroup(){
-            self.selected = {};
-            self.selectedIndex = null;
-        }
-        function selectgroup(group, index) {
-            self.master = angular.copy(group); 
-            self.selected = angular.isNumber(group) ? self.groups[index] : group;
-            self.selectedIndex = angular.isNumber(group) ? group: index;
-        }
-        
-        function cancelEdit(){
-            console.log('cancelEdit')
-            self.selected = self.master;
-            self.groups[self.selectedIndex] = self.master;
+        function newGroup(form, $event) {
+            console.log('newGroup');
+            if (form.$dirty && !form.$pristine) {
+                var confirm = $mdDialog.confirm()
+                    .title('WARNING: Unsaved Changes')
+                    .content('You have unsaved changes.  Are you sure you want to lose them?')
+                    .ok('Yes')
+                    .cancel('No')
+                    .targetEvent($event);
 
+                $mdDialog.show(confirm).then(function() {
+                    var original = angular.copy(self.master);
+                    self.groups[self.selectedIndex] = original;
+                      
+                    self.selected = {};
+                    self.selectedIndex = null;
+                    self.master = {};
+                    form.$setPristine();
+                });
+            } else {
+                self.selected = {};
+                self.selectedIndex = null;
+                self.master = {};
+                
+            }
+        }
+
+        function selectgroup(group, index, form, $event) {
+
+            console.log('selectGroup');
+            if (form.$dirty && !form.$pristine) {
+                var confirm = $mdDialog.confirm()
+                    .title('WARNING: Unsaved Changes')
+                    .content('You have unsaved changes.  Are you sure you want to lose them?')
+                    .ok('Yes')
+                    .cancel('No')
+                    .targetEvent($event);
+
+                $mdDialog.show(confirm).then(function() {
+                    var original = angular.copy(self.master);
+                    self.groups[self.selectedIndex] = original;
+
+                    self.master = angular.copy(group);
+                    self.selected = group;
+                    self.selectedIndex = index;
+                    form.$setPristine();
+                });
+            } else {
+                self.master = angular.copy(group);
+                self.selected = group;
+                self.selectedIndex = index;
+            }
+        }
+
+        function cancelEdit($event, form) {
+            console.log('cancelEdit')
+            var confirm = $mdDialog.confirm()
+                .title('Are you sure?')
+                .content('Are you sure want to cancel this edit?')
+                .ok('Yes')
+                .cancel('No')
+                .targetEvent($event);
+
+            $mdDialog.show(confirm).then(function() {
+                var original = angular.copy(self.master);
+                self.selected = original;
+                self.groups[self.selectedIndex] = original;
+                form.$setPristine();
+
+            }, function() { });
         }
 
         function deletegroup($event) {
+            console.log('deletegroup');
             var confirm = $mdDialog.confirm()
-                                   .title('Are you sure?')
-                                   .content('Are you sure want to delete this group?')
-                                   .ok('Yes')
-                                   .cancel('No')
-                                   .targetEvent($event);
-            
-            
-            $mdDialog.show(confirm).then(function () {
-                groupIntakeService.deleteGroup(self.selected).then(function (affectedRows) {
+                .title('Are you sure?')
+                .content('Are you sure want to delete this group?')
+                .ok('Yes')
+                .cancel('No')
+                .targetEvent($event);
+
+
+            $mdDialog.show(confirm).then(function() {
+                groupIntakeService.deleteGroup(self.selected).then(function(affectedRows) {
                     self.groups.splice(self.groups.indexOf(self.selected), 1);
                     self.selectedIndex = 0;
                     self.selected = {};
                 });
-            }, function () { });
+            }, function() { });
         }
-        
+
         function savegroup($event) {
             console.log('saveGroup', self.selected);
             if (self.selected != null && self.selected.groupid != null) {
-                groupIntakeService.updateGroup(self.selected).then(function (affectedRows) {
+                console.log('saveGroup Updatings');
+                groupIntakeService.updateGroup(self.selected).then(function(affectedRows) {
                     $mdDialog.show(
                         $mdDialog
                             .alert()
@@ -77,7 +143,8 @@
                 });
             }
             else {
-                groupIntakeService.createGroup(self.selected).then(function (affectedRows) {
+                console.log('getAllGroups newGroup');
+                groupIntakeService.createGroup(self.selected).then(function(affectedRows) {
                     console.log('affectedRows', affectedRows);
                     self.groups = self.groups.concat(affectedRows);
 
@@ -93,18 +160,20 @@
                 });
             }
         }
-        
-        
+
+
         function getAllgroups() {
-            groupIntakeService.getGroups().then(function (groups) {
+            console.log('getAllGroups');
+            groupIntakeService.getGroups().then(function(groups) {
                 console.log('groups', groups);
                 self.groups = [].concat(groups);
                 self.selected = groups[0];
+                self.master = angular.copy(self.selected);
             });
         }
-        
-        function getCityStateZipCodes(){
-            statecityzipService.getStateCityZip().then(function(result){
+
+        function getCityStateZipCodes() {
+            statecityzipService.getStateCityZip().then(function(result) {
                 self.stateCityZip = [].concat(result);
             });
         }
@@ -115,9 +184,10 @@
                 getAllgroups();
             }
             else {
-                groupIntakeService.getGroupByName(self.filterText).then(function (groups) {
+                groupIntakeService.getGroupByName(self.filterText).then(function(groups) {
                     self.groups = [].concat(groups);
                     self.selected = groups[0];
+                    self.master = angular.copy(self.selected);
                 });
             }
         }

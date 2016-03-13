@@ -25,7 +25,7 @@
     ])
     .constant('serverinfo', {
         port: "3000",
-        server: "localhost"
+        server: "192.168.11.3"
     });
 
 })();
