@@ -221,7 +221,7 @@
       },
       "_selectable": true
     },
-    "other1Description": {
+        "other1Description": {
       "type": "String",
       "required": false,
       "length": 50,
