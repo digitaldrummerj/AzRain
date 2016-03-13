@@ -1,0 +1,14 @@
+{
+  "db": {
+    "name": "db",
+    "connector": "memory"
+  },
+  "mssql": {
+    "host": "192.168.11.29",
+    "database": "RescuingAnimalsInNeed",
+    "password": "2320",
+    "name": "mssql",
+    "user": "Wayne",
+    "connector": "mssql"
+  }
+}
