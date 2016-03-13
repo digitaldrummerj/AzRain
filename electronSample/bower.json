@@ -1,0 +1,16 @@
+{
+  "name": "AngularElectron",
+  "version": "0.0.0",
+  "description": "AngularElectron",
+  "main": "app.js",
+  "author": {
+    "name": "itse4",
+    "email": ""
+  },
+  "dependencies": {
+    "angular": "^1.5.0",
+    "angular-material": "^1.0.6",
+    "angular-route": "^1.5.0",
+    "bootstrap": "^3.3.6"
+  }
+}
